@@ -5,7 +5,7 @@ import 'package:crypto_bloc/repositories/base_crypto_repository.dart';
 import 'package:http/http.dart' as http;
 
 class CryptoRepository extends BaseCryptoRepository {
-  static const String _baseUrl = 'https://min-api.cryptocompare.com/';
+  static const String _baseUrl = 'https://min-api.cryptocompare.com';
   static const int _prePage = 20;
 
   final http.Client _httpClient;

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:crypto_bloc/widgets/Error_widget.dart';
 import 'package:crypto_bloc/repositories/crypto_repository.dart';
+import 'package:crypto_bloc/models/coin_model.dart';
+import 'package:crypto_bloc/widgets/coins_list_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -44,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               case ConnectionState.done:
                 if (snap.hasError) return ShowError(snap);
-                return Text('Got Data');
+                return CoinsList(coins: snap.data ?? <Coin>[]);
             }
             return null;
           },
