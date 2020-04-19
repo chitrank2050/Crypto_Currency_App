@@ -3,12 +3,14 @@ import 'package:crypto_bloc/models/coin_model.dart';
 
 class CoinsList extends StatelessWidget {
   final List<Coin> coins;
-
-  const CoinsList({Key key, this.coins}) : super(key: key);
+  final Function refreshData;
+  const CoinsList({Key key, this.coins, this.refreshData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return RefreshIndicator(
+      color: Theme.of(context).accentColor,
+      onRefresh: () async => refreshData(),
       child: ListView.builder(
         itemCount: coins.length,
         itemBuilder: (BuildContext context, int i) {

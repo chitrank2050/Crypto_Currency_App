@@ -14,6 +14,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final _cryptoRepository = CryptoRepository();
   int _page = 0;
 
+  void reloadData() => setState(() => _page = 2);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +48,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               case ConnectionState.done:
                 if (snap.hasError) return ShowError(snap);
-                return CoinsList(coins: snap.data ?? <Coin>[]);
+                return CoinsList(
+                  coins: snap.data ?? <Coin>[],
+                  refreshData: reloadData,
+                );
             }
             return null;
           },
