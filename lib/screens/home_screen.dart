@@ -14,7 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _cryptoRepository = CryptoRepository();
   int _page = 0;
 
-  void reloadData() => setState(() => _page = 2);
+  void reloadData() => setState(() => _page = 0);
 
   @override
   Widget build(BuildContext context) {
