@@ -11,6 +11,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _scrollContoller = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,10 +48,22 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     } else if (state is CryptoLoaded) {
       return CoinsList(
-        coins: state.coins,
+        state: state,
+        scrollNotif: _onScrollNotification,
+        controller: _scrollContoller,
       );
     } else if (state is CryptoError) {
-      return ShowError('Check Error');
+      return ShowError(
+          'An Error occured, \n Please check your internet commectivity.');
     }
+  }
+
+  bool _onScrollNotification(Notification notif, CryptoLoaded state) {
+    if (notif is ScrollEndNotification &&
+        _scrollContoller.position.extentAfter == 0) {
+      BlocProvider.of<CryptoBloc>(context)
+          .add(LoadMoreCoins(coins: state.coins));
+    }
+    return false;
   }
 }
