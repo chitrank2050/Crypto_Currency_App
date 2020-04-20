@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ShowError extends StatelessWidget {
-  final AsyncSnapshot snapshot;
+  final String errorMessage;
 
-  ShowError(this.snapshot);
+  ShowError(this.errorMessage);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class ShowError extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            'Error: ${snapshot.error}',
+            'Error: $errorMessage',
             style: TextStyle(
               color: Colors.grey,
             ),

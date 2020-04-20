@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:crypto_bloc/widgets/Error_widget.dart';
-import 'package:crypto_bloc/repositories/crypto_repository.dart';
-import 'package:crypto_bloc/models/coin_model.dart';
 import 'package:crypto_bloc/widgets/coins_list_widget.dart';
+import 'package:crypto_bloc/blocs/crypto/crypto_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -11,52 +11,45 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _cryptoRepository = CryptoRepository();
-  int _page = 0;
-
-  void reloadData() => setState(() => _page = 0);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Top Coins'),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: <Color>[
-              Theme.of(context).primaryColor,
-              Colors.grey[900],
-            ],
-          ),
-        ),
-        child: FutureBuilder(
-          future: _cryptoRepository.getTopCoins(page: _page),
-          builder: (BuildContext context, AsyncSnapshot snap) {
-            switch (snap.connectionState) {
-              case ConnectionState.none:
-              case ConnectionState.active:
-              case ConnectionState.waiting:
-                return Center(
-                  child: CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation(Theme.of(context).accentColor),
-                  ),
-                );
-              case ConnectionState.done:
-                if (snap.hasError) return ShowError(snap);
-                return CoinsList(
-                  coins: snap.data ?? <Coin>[],
-                  refreshData: reloadData,
-                );
-            }
-            return null;
-          },
-        ),
+      body: BlocBuilder<CryptoBloc, CryptoState>(
+        builder: (BuildContext context, CryptoState state) {
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: <Color>[
+                  Theme.of(context).primaryColor,
+                  Colors.grey[900],
+                ],
+              ),
+            ),
+            child: _buildBody(state),
+          );
+        },
       ),
     );
+  }
+
+  _buildBody(CryptoState state) {
+    if (state is CryptoLoading) {
+      return Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation(Theme.of(context).accentColor),
+        ),
+      );
+    } else if (state is CryptoLoaded) {
+      return CoinsList(
+        coins: state.coins,
+      );
+    } else if (state is CryptoError) {
+      return ShowError('Check Error');
+    }
   }
 }
